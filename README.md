@@ -29,28 +29,9 @@ The full argument, related work and experiment plan are in [docs/proposal.md](do
 
 ## The pipeline
 
-```mermaid
-flowchart TD
-    A["Reddit archive, 15 communities"] -->|"collect.py posts"| B["Posts"]
-    B -->|"keep image posts, skip adult ones"| C["Image posts"]
-    C -->|"collect.py images"| D["Image files"]
-    D -->|"collect.py pairs: perceptual hash"| E["Look-alike pairs"]
-    E -->|"collect.py diff: align and subtract"| F{"What changed?"}
-    F -->|"under 0.5% of pixels"| G["Exact repost"]
-    F -->|"a band at the top or bottom"| H["Caption only"]
-    F -->|"over 40%, or cannot be aligned"| I["Different picture"]
-    F -->|"part of the picture"| J["Edit candidate"]
-    J -->|"collect.py judge: model asked twice"| K{"Both answers agree?"}
-    K -->|"yes"| L["Labeled edit"]
-    K -->|"no"| M["Undecided"]
-    L --> N["Hand check"]
-    M --> N
-    N -->|"collect.py index"| O[("index.csv: one row per post")]
-    O -->|"graph.py histories"| P["Poster histories, 180 days back"]
-    P -->|"graph.py graph"| Q[("nodes.csv and links.csv")]
-    Q -->|"graph.py features"| R[("features.csv")]
-    R --> S["modeling.ipynb: image only, history only, both"]
-```
+![How the dataset and the graph are built](docs/img/fig1_dataset.png)
+
+The counts in the figure are from the first month of data.
 
 ### 1. Posts and images
 
@@ -75,49 +56,21 @@ We want two posts that carry the same picture, where one version has been altere
 | Different picture | over 40% changed, or the two cannot be aligned | discarded |
 | **Edit candidate** | anything else | sent to the labeling model |
 
-**Two real pairs from the data.**
+**Four real pairs from the data.** In each column the two pictures are the two versions, and the red boxes
+are drawn by the pipeline where they differ.
 
-*A subtle one.* A news-style photo of a handshake at a summit. In one version the backdrop reads
-"MOSCOW 2026". In the other the year is gone. Three accounts posted the picture within 18 hours, two with the
-year and one without.
+![Four real pairs](docs/img/fig3_examples.png)
 
-| Version A | Version B |
-|---|---|
-| <img src="docs/img/ex_news_a.jpg" width="250"> | <img src="docs/img/ex_news_b.jpg" width="250"> |
-| <img src="docs/img/ex_news_zoom_a.jpg" width="250"> | <img src="docs/img/ex_news_zoom_b.jpg" width="250"> |
-
-The hashes differ in 8 of 64 bits and only 0.8% of the pixels changed. At normal size neither version looks
-edited, yet the two make different claims about when the picture was taken. Which one is the original is not
-settled. The labeling model says the year was added. The posting record does not decide it: the version
-without the year was posted last, and that post was removed by moderators. The pair is on the hand-check
-list. This is the kind of edit the project is about: small, plausible, and hard to call from pixels alone.
-
-*An added object.* A film still, and a version where a tall top hat has been put on the man's head. About
-3% of the pixels changed, and the labeling model named the hat version in both orders. The red boxes are
-drawn by the pipeline to mark where the two versions differ.
-
-| Before | After |
-|---|---|
-| <img src="docs/img/ex_hat_a.jpg" width="380"> | <img src="docs/img/ex_hat_b.jpg" width="380"> |
-
-*A person inserted.* A film scene, and a version where a woman in a red dress has been placed in the
-doorway. About 2% of the pixels changed. The model agreed this was an edit but named a different file in each
-order, so the pair stays undecided until the hand check.
-
-| Before | After |
-|---|---|
-| <img src="docs/img/ex_insert_a.jpg" width="380"> | <img src="docs/img/ex_insert_b.jpg" width="380"> |
-
-*A large one.* A print of *The Great Wave* was posted in one community. Ten hours later another
-account posted a version with rabbits added to the wave, in two communities ten minutes apart.
-
-| Original | Edited | What the labeling model is shown |
-|---|---|---|
-| <img src="docs/img/example_original.jpg" width="270"> | <img src="docs/img/example_edited.jpg" width="270"> | <img src="docs/img/example_outline.jpg" width="270"> |
-
-The hashes differ in 8 of 64 bits, the images align on 140 matched points with 96% overlap, and 25.5% of the
-pixels changed. That makes it an edit candidate. The red outline is drawn by the pipeline to mark where the
-two versions differ.
+1. **Text on a backdrop.** A news-style photo of a handshake at a summit. One version carries the year and the
+   other does not. Three accounts posted it within 18 hours. Which version is the original is not settled:
+   the labeling model says the year was added, and the version without it was posted last and removed by
+   moderators. The pair is on the hand-check list.
+2. **Object added.** A film still with a top hat put on the man's head. The model named the hat version in
+   both orders.
+3. **Person inserted.** A figure placed in the doorway of a film scene. The model agreed it was an edit but
+   named a different file in each order, so the pair waits for the hand check.
+4. **Picture reworked.** A print of *The Great Wave* with rabbits added along the wave, posted ten hours after
+   the original. The hashes differ in 8 of 64 bits and the images line up on 140 matched points.
 
 ### 3. Labeling with a vision-language model
 
@@ -162,31 +115,9 @@ A person then checks the pairs in `data/pairs/review.html` and writes verdicts i
 `graph.py histories` fetches what each poster in the dataset did in the 180 days before their post.
 `graph.py graph` writes two plain tables, `nodes.csv` and `links.csv`, which also load into Neo4j as they are.
 
-```mermaid
-flowchart LR
-    U(("User")) -->|"POSTED"| P["Post"]
-    U -->|"COMMENTED_ON"| P
-    P -->|"HAS_IMAGE"| I(["Image"])
-    P -->|"CROSSPOSTED"| P2["Post"]
-    I ---|"SAME_AS: exact repost"| I2(["Image"])
-    I ---|"VARIANT_OF: one is an edit of the other"| I3(["Image"])
-```
-
-This is the neighbourhood of the Great Wave pair in the graph:
-
-```mermaid
-flowchart LR
-    A(("Account A")) -->|"POSTED 4 Nov, 02:41"| P1["Post in r/pics"]
-    B(("Account B")) -->|"POSTED 12:54"| P2["Post in r/PoliticalHumor"]
-    B -->|"POSTED 13:03"| P3["Post in r/pics"]
-    P1 -->|"HAS_IMAGE"| X(["Original image"])
-    P2 -->|"HAS_IMAGE"| Y(["Edited image"])
-    P3 -->|"HAS_IMAGE"| Y
-    P3 -->|"CROSSPOSTED"| P2
-    X ---|"VARIANT_OF"| Y
-    B -.->|"earlier activity"| H["16 posts and 100+ comments in 35 communities"]
-    A -.->|"earlier activity"| H2["1 post and 4 comments in 4 communities"]
-```
+Panel 5 of the figure at the top shows the result: accounts, posts and pictures, joined by `POSTED`,
+`HAS_IMAGE`, `COMMENTED_ON`, `CROSSPOSTED`, `SAME_AS` (exact repost) and `VARIANT_OF` (one is an edit of the
+other) links.
 
 The `VARIANT_OF` link has no direction. Which side is the edit is the label, and the label is never stored in
 the graph.
@@ -209,6 +140,8 @@ Three rules keep the label from leaking into the features:
 - Cross-validation folds keep every account and every picture on one side of the split.
 
 ### 5. Models
+
+![The three predictors and how they are compared](docs/img/fig2_models.png)
 
 | Model | Sees | How |
 |---|---|---|
@@ -235,7 +168,7 @@ jobs/
   long_run.sh       login node: image downloads, queues the labeling job hourly
   pairs.sbatch      CPU node: pair finding and pixel comparison
   judge.sbatch      one H100: the labeling model
-docs/               proposal, design notes, bibliography, progress reports, figures
+docs/               proposal, design notes, bibliography, progress reports, figures (make_figures.py)
 sample_data/        a small real slice of every file below
 results/            score tables and figures
 data/               the real data (not in git)
