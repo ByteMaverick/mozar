@@ -153,8 +153,9 @@ The question is whether M2 beats M0, and how far M1 gets alone. Tree models and 
 (GraphSAGE) on the same graph are planned as extra comparisons. Every result is reported next to the same
 model with the history columns shuffled, so extra model capacity is not mistaken for information.
 
-`modeling.ipynb` holds the splits, M1, the fusion and the shuffled-history check. The detectors have not been
-run yet, so M0 and M2 are empty for now.
+`modeling.ipynb` compares logistic regression, a decision tree, a random forest and XGBoost on the history
+features, each tuned by grid search inside grouped, nested cross-validation with class weights, and holds the
+fusion and the shuffled-history check. The detectors have not been run yet, so M0 and M2 are empty for now.
 
 ## Repository
 
@@ -164,6 +165,8 @@ collect.py          posts, images, pairs, pixel comparison, model labels, datase
 graph.py            poster histories, graph tables, features
 utils.py            archive client, image download, account codes
 modeling.ipynb      the models and the checks
+TODO.md             open engineering items
+.claude/skills/mozar-guide/   onboarding guide: cluster access, pipeline, weaknesses, modeling, fusion, papers
 jobs/
   long_run.sh       login node: image downloads, queues the labeling job hourly
   pairs.sbatch      CPU node: pair finding and pixel comparison

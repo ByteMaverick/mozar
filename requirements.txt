@@ -4,6 +4,7 @@ pillow==13.0.0
 ImageHash==4.3.2
 opencv-python-headless==5.0.0.93
 scikit-learn==1.9.1
+xgboost==3.4.1
 matplotlib==3.11.2
 jupyter==1.1.1
 # only for the labeling step (collect.py judge), on a GPU node
