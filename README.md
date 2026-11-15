@@ -100,6 +100,14 @@ drawn by the pipeline to mark where the two versions differ.
 |---|---|
 | <img src="docs/img/ex_hat_a.jpg" width="380"> | <img src="docs/img/ex_hat_b.jpg" width="380"> |
 
+*A person inserted.* A film scene, and a version where a woman in a red dress has been placed in the
+doorway. About 2% of the pixels changed. The model agreed this was an edit but named a different file in each
+order, so the pair stays undecided until the hand check.
+
+| Before | After |
+|---|---|
+| <img src="docs/img/ex_insert_a.jpg" width="380"> | <img src="docs/img/ex_insert_b.jpg" width="380"> |
+
 *A large one.* A print of *The Great Wave* was posted in one community. Ten hours later another
 account posted a version with rabbits added to the wave, in two communities ten minutes apart.
 
