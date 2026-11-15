@@ -1,0 +1,9 @@
+# real data, model weights and logs stay on the cluster; sample_data/ is the only data in git
+data/
+models/
+logs/
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*.part
+.DS_Store

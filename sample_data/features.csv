@@ -1,0 +1,7 @@
+post_id,label,pair_id,author,img,subreddit,created_utc,has_history,n_posts,n_comments,n_subreddits,subreddit_entropy,share_image_posts,days_observed,posts_per_day,n_prior_pool_posts,prior_repost_share,prior_variant_share,history_capped
+1xnngo0,manipulated,p00065,u_61f7ac9a5694,zb6nz7izelzh1.jpeg,PoliticalHumor,1793796846,1,15,100,35,3.0167,0.1333,179.4,0.0836,0,0,0,1
+1xnnogq,manipulated,p00065,u_61f7ac9a5694,zb6nz7izelzh1.jpeg,pics,1793797431,1,16,100,35,3.0209,0.1875,179.41,0.0892,0,0,0,1
+1xncth5,authentic_matched,p00065,u_33fd7d4561a3,berxoaqqdizh1.jpeg,pics,1793760108,1,1,4,4,1.3322,1.0,122.43,0.0082,0,0,0,0
+1x61s6r,authentic_fresh,,u_9314e5f4d782,raepjvq3qhvh1.jpg,conspiracy,1792008768,1,35,100,20,2.0332,0.1714,179.45,0.195,0,0,0,1
+1x6mn34,authentic_fresh,,u_b6e4346ecbbb,w88ozx012nvh1.jpeg,shittymoviedetails,1792073311,1,4,42,16,2.2651,0.75,178.89,0.0224,0,0,0,0
+1xmxf6a,authentic_fresh,,u_644a81817c6b,8ntkes6abfzh1.jpeg,food,1793722961,1,100,100,16,2.2898,0.96,179.65,0.5566,0,0,0,1
