@@ -280,6 +280,11 @@ Answer in JSON with exactly these keys:
 3. "evidence": One sentence naming the trace you relied on.
 4. "looks_ai": Does the edit look made by an AI image tool: "yes", "no", or "cannot_tell"?
 5. "confidence": "high", "medium" or "low".
+6. "picture_type": What kind of picture is this?
+   "photo": a photograph of a real scene or real people.
+   "meme": a meme template, comic, cartoon, or a picture built around large caption text.
+   "screenshot": a capture of a post, chat, app or web page.
+   "other": a poster, painting, illustration, or a film or game still.
 Reply with the JSON object only."""
 
 
@@ -347,14 +352,16 @@ def decide():
         votes = [str(x["answer"].get("real_edit", "")).lower() for x in (a, b)]
         real, not_real = votes == ["yes", "yes"], votes == ["no", "no"]
         agree = a["edited_file"] and a["edited_file"] == b["edited_file"]
+        types = [str(x["answer"].get("picture_type", "")).lower() for x in (a, b)]
         rows.append({"pair_id": pid,
                      "decision": "labeled" if real and agree else ("not_an_edit" if not_real else "undecided"),
                      "edited_img": a["edited_file"] if real and agree else "",
                      "looks_ai": a["answer"].get("looks_ai", ""),
                      "confidence": f"{a['answer'].get('confidence', '')}/{b['answer'].get('confidence', '')}",
-                     "evidence": a["answer"].get("evidence", ""), "hand_check": ""})
+                     "evidence": a["answer"].get("evidence", ""), "hand_check": "",
+                     "picture_type": types[0] if types[0] == types[1] else "unclear"})
     write_csv(LABELS / "decisions.csv", rows,
-              ["pair_id", "decision", "edited_img", "looks_ai", "confidence", "evidence", "hand_check"])
+              ["pair_id", "decision", "edited_img", "looks_ai", "confidence", "evidence", "hand_check", "picture_type"])
     print("decisions:", {d: sum(r["decision"] == d for r in rows) for d in ("labeled", "undecided", "not_an_edit")})
 
 
@@ -388,7 +395,8 @@ def build_index():
         for img, label in ((d["edited_img"], "manipulated"), (orig, "authentic_matched")):
             for p in by_img.get(img, []):
                 if p["post_id"] not in keep or (label == "manipulated" and keep[p["post_id"]]["label"] != label):
-                    keep[p["post_id"]] = {**p, "label": label, "pair_id": d["pair_id"], "hand_check": d["hand_check"]}
+                    keep[p["post_id"]] = {**p, "label": label, "pair_id": d["pair_id"], "hand_check": d["hand_check"],
+                                           "picture_type": d.get("picture_type", "")}
     rows = list(keep.values())
     # Fresh: images with no look-alike at all, from the same communities.
     paired = {x for r in read_csv(PAIRS / "pairs.csv") for x in (r["img_a"], r["img_b"])}
@@ -397,8 +405,8 @@ def build_index():
     n_manip = sum(r["label"] == "manipulated" for r in rows)
     random.Random(0).shuffle(fresh)
     for p in fresh[:max(FRESH_PER_MANIPULATED * n_manip, 30)]:  # never fewer than 30, so a small run still has rows
-        rows.append({**p, "label": "authentic_fresh", "pair_id": "", "hand_check": ""})
-    fields = ["post_id", "subreddit", "author", "created_utc", "img", "label", "pair_id", "hand_check",
+        rows.append({**p, "label": "authentic_fresh", "pair_id": "", "hand_check": "", "picture_type": ""})
+    fields = ["post_id", "subreddit", "author", "created_utc", "img", "label", "pair_id", "hand_check", "picture_type",
               "crosspost_parent", "removed", "url"]
     write_csv(DATA / "index.csv", rows, fields)
     print("index:", {k: sum(r["label"] == k for r in rows) for k in ("manipulated", "authentic_matched", "authentic_fresh")})
