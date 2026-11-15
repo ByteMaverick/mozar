@@ -42,7 +42,8 @@ gets alone. The dataset itself, with real social context attached to verified ed
 3. **Splits by account and picture.** An account or a picture never sits in both training and testing.
    The notebook builds these groups; keep using them for every new model.
 4. **No usernames outside the raw post files.** Everything else uses account codes (`u_` plus 12 characters).
-   Never print, commit or share real usernames.
+   Never print, commit or share real usernames. **The repository is public**: never commit real data,
+   raw posts, images, SJSU IDs, passwords, keys or tokens. Only `sample_data/` holds data, and it is scrubbed.
 5. **Adult posts are never downloaded.**
 6. **Do not touch Mohammed's running jobs** (`mozar-pairs`, `mozar-judge`, the collection on the login node).
    Do not start a second collection: the archive is shared and rate-limited, and two copies would double the load.
@@ -52,7 +53,7 @@ gets alone. The dataset itself, with real social context attached to verified ed
 
 | What | Where |
 |---|---|
-| Code (GitHub, private) | `github.com/ByteMaverick/mozar`; ask Mohammed to add your GitHub account |
+| Code (GitHub, public) | https://github.com/ByteMaverick/mozar; anyone can clone it, and pushing needs Mohammed to add you as a collaborator |
 | Shared copy on the cluster | `/data/nsf-jg/mozar` (group `nsf-jg`, readable and writable by the group) |
 | Shared Python environment | `/data/nsf-jg/mozar/.venv` |
 | The live data and running pipeline | Mohammed's home folder; the shared folder gets a copy (see access.md) |

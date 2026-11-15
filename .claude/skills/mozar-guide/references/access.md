@@ -95,7 +95,7 @@ scancel <job id>                                    # stop a job
 The modeling data is small (one row per post, a few hundred rows), so the simplest place is the laptop:
 
 ```bash
-git clone git@github.com:ByteMaverick/mozar.git && cd mozar
+git clone https://github.com/ByteMaverick/mozar.git && cd mozar
 python -m venv .venv && .venv/bin/pip install -r requirements.txt
 scp -r hpc:/data/nsf-jg/mozar/data/{features.csv,index.csv,labels} data/   # small files only
 .venv/bin/jupyter lab modeling.ipynb
@@ -114,8 +114,9 @@ Do not copy images to the laptop; there are hundreds of thousands of them.
 
 ## 7. Keeping the shared copy and the laptop in step
 
-The shared folder is a git checkout. To update it after pulling on GitHub, either set up git credentials on
-the cluster (a GitHub deploy key or a personal access token) and run `git pull` there, or copy from the laptop:
+The shared folder is a git checkout of the public repository, so `git pull` works there without credentials
+(the login node has internet). Pushing from the cluster needs your own GitHub credentials; it is simpler to push
+from the laptop and pull on the cluster. Copying from the laptop also works:
 
 ```bash
 rsync -a --exclude data/ --exclude models/ --exclude .venv/ --exclude logs/ ./ hpc:/data/nsf-jg/mozar/
