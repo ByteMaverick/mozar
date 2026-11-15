@@ -75,7 +75,24 @@ We want two posts that carry the same picture, where one version has been altere
 | Different picture | over 40% changed, or the two cannot be aligned | discarded |
 | **Edit candidate** | anything else | sent to the labeling model |
 
-**A real pair from the data.** A print of *The Great Wave* was posted in one community. Ten hours later another
+**Two real pairs from the data.**
+
+*A subtle one.* A news-style photo of a handshake at a summit. In one version the backdrop reads
+"MOSCOW 2026". In the other the year is gone. Three accounts posted the picture within 18 hours, two with the
+year and one without.
+
+| Version A | Version B |
+|---|---|
+| <img src="docs/img/ex_news_a.jpg" width="250"> | <img src="docs/img/ex_news_b.jpg" width="250"> |
+| <img src="docs/img/ex_news_zoom_a.jpg" width="250"> | <img src="docs/img/ex_news_zoom_b.jpg" width="250"> |
+
+The hashes differ in 8 of 64 bits and only 0.8% of the pixels changed. At normal size neither version looks
+edited, yet the two make different claims about when the picture was taken. Which one is the original is not
+settled. The labeling model says the year was added. The posting record does not decide it: the version
+without the year was posted last, and that post was removed by moderators. The pair is on the hand-check
+list. This is the kind of edit the project is about: small, plausible, and hard to call from pixels alone.
+
+*An obvious one.* A print of *The Great Wave* was posted in one community. Ten hours later another
 account posted a version with rabbits added to the wave, in two communities ten minutes apart.
 
 | Original | Edited | What the labeling model is shown |
@@ -110,7 +127,7 @@ altered, what visible trace shows it, does it look AI-made, and how confident it
 It never sees dates, usernames, titles or communities. Asking twice with the order swapped catches a model
 that favours whichever image comes first.
 
-For the pair above, both answers named the rabbit version:
+For the Great Wave pair, both answers named the rabbit version:
 
 > "Image 2 contains numerous white rabbits riding the wave, which are not present in Image 1 and do not blend
 > with the original artwork's style or content."
