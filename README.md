@@ -92,7 +92,15 @@ settled. The labeling model says the year was added. The posting record does not
 without the year was posted last, and that post was removed by moderators. The pair is on the hand-check
 list. This is the kind of edit the project is about: small, plausible, and hard to call from pixels alone.
 
-*An obvious one.* A print of *The Great Wave* was posted in one community. Ten hours later another
+*An added object.* A film still, and a version where a tall top hat has been put on the man's head. About
+3% of the pixels changed, and the labeling model named the hat version in both orders. The red boxes are
+drawn by the pipeline to mark where the two versions differ.
+
+| Before | After |
+|---|---|
+| <img src="docs/img/ex_hat_a.jpg" width="380"> | <img src="docs/img/ex_hat_b.jpg" width="380"> |
+
+*A large one.* A print of *The Great Wave* was posted in one community. Ten hours later another
 account posted a version with rabbits added to the wave, in two communities ten minutes apart.
 
 | Original | Edited | What the labeling model is shown |
