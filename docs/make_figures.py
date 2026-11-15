@@ -289,29 +289,20 @@ def figure2():
 # Figure 3: four real pairs ------------------------------------------------------------------
 
 def figure3():
-    fig, ax, size = canvas(7.2, 3.75)
-    cols = [("year", "Text on a backdrop", ("version A", "version B"),
-             ["A year is on the backdrop in one version", "3 accounts posted it within 18 hours",
-              "model: the year was added (not settled)", "0.8% of pixels changed"],
+    fig, ax, size = canvas(7.2, 3.3)
+    cols = [("year", "Text on a backdrop", ("version A", "version B"), "A year is on the backdrop in one version",
              [(0.81, 0.21, 0.228, 0.189), (0.32, 0.219, 0.272, 0.187)]),
-            ("hat", "Object added", ("original", "edited"),
-             ["A top hat is placed on the man's head", "both posted in a film community",
-              "model: same answer in both orders", "2.6% of pixels changed"], HAT),
-            ("person", "Person inserted", ("original", "edited"),
-             ["A figure is placed in the doorway", "both posted in a political humour community",
-              "model: an edit, but versions disagree", "1.8% of pixels changed"], [(0.391, 0.296, 0.219, 0.589)]),
-            ("wave", "Picture reworked", ("original", "edited"),
-             ["Rabbits are added along the wave", "posted 10 hours after the original",
-              "model: same answer in both orders", "25.5% of pixels changed"], [])]
+            ("hat", "Object added", ("original", "edited"), "A top hat is placed on the man's head", HAT),
+            ("person", "Person inserted", ("original", "edited"), "A figure is placed in the doorway",
+             [(0.391, 0.296, 0.219, 0.589)]),
+            ("wave", "Picture reworked", ("original", "edited"), "Rabbits are added along the wave", [])]
     w, gap = 33.3, 1.8
-    for k, (name, title, tags, lines, boxes) in enumerate(cols):
+    for k, (name, title, tags, what, boxes) in enumerate(cols):
         x = 3 + k * (w + gap)
-        panel(ax, x, 3, w, 69, title)
+        panel(ax, x, 3, w, 60, title)
         for r, side in enumerate("ab"):
-            picture(ax, f"{name}_{side}.jpg", x + 1.8, 42 - 23.4 * r, w - 3.6, boxes, tags[r])
-        T(ax, x + w / 2, 15, lines[0], size=5.1, ha="center")
-        for i, s in enumerate(lines[1:]):
-            T(ax, x + w / 2, 12 - 2.8 * i, s, size=4.6, color=FINE, ha="center")
+            picture(ax, f"{name}_{side}.jpg", x + 1.8, 33.2 - 23.4 * r, w - 3.6, boxes, tags[r])
+        T(ax, x + w / 2, 6.3, what, size=5.1, ha="center")
     finish(fig, ax, size, "fig3_examples")
 
 
