@@ -66,27 +66,40 @@ def histories():
 
 
 def graph():
-    """Two plain tables, nodes.csv and links.csv, that also load into Neo4j as they are."""
-    pool = read_csv(POSTS / "image_posts.csv")
+    """Two plain tables, nodes.csv and links.csv, that also load into Neo4j as they are.
+
+    The core follows RIFT (Joshi, 2025): Post, User and Subreddit nodes, joined by POSTED_BY and BELONGS_TO.
+    We add an Image node and the links HAS_IMAGE, COMMENTED_ON, CROSSPOSTED, SAME_AS and VARIANT_OF.
+    """
     nodes, links = {}, []
-    for p in pool:
-        nodes[p["author"]] = {"id": p["author"], "type": "User", "subreddit": "", "time": ""}
-        nodes[p["post_id"]] = {"id": p["post_id"], "type": "Post", "subreddit": p["subreddit"], "time": p["created_utc"]}
-        links.append({"src": p["author"], "dst": p["post_id"], "type": "POSTED", "time": p["created_utc"]})
+
+    def node(i, kind, subreddit="", time=""):
+        nodes.setdefault(i, {"id": i, "type": kind, "subreddit": subreddit, "time": time})
+
+    def post(pid, subreddit, time):
+        node(pid, "Post", subreddit, time)
+        if subreddit:
+            node("r/" + subreddit, "Subreddit")
+            links.append({"src": pid, "dst": "r/" + subreddit, "type": "BELONGS_TO", "time": time})
+
+    for p in read_csv(POSTS / "image_posts.csv"):
+        node(p["author"], "User")
+        post(p["post_id"], p["subreddit"], p["created_utc"])
+        links.append({"src": p["post_id"], "dst": p["author"], "type": "POSTED_BY", "time": p["created_utc"]})
         if (IMAGES / p["img"]).exists():
-            nodes[p["img"]] = {"id": p["img"], "type": "Image", "subreddit": "", "time": ""}
+            node(p["img"], "Image")
             links.append({"src": p["post_id"], "dst": p["img"], "type": "HAS_IMAGE", "time": p["created_utc"]})
         if p["crosspost_parent"]:
             links.append({"src": p["post_id"], "dst": p["crosspost_parent"], "type": "CROSSPOSTED", "time": p["created_utc"]})
     for f in HIST.glob("*.jsonl"):
         code = f.stem
-        nodes.setdefault(code, {"id": code, "type": "User", "subreddit": "", "time": ""})
+        node(code, "User")
         for h in read_jsonl(f):
             if h["kind"] == "post":
-                nodes.setdefault(h["id"], {"id": h["id"], "type": "Post", "subreddit": h["subreddit"], "time": h["created_utc"]})
-                links.append({"src": code, "dst": h["id"], "type": "POSTED", "time": h["created_utc"]})
+                post(h["id"], h["subreddit"], h["created_utc"])
+                links.append({"src": h["id"], "dst": code, "type": "POSTED_BY", "time": h["created_utc"]})
             elif h["link_id"]:
-                nodes.setdefault(h["link_id"], {"id": h["link_id"], "type": "Post", "subreddit": h["subreddit"], "time": ""})
+                post(h["link_id"], h["subreddit"], "")
                 links.append({"src": code, "dst": h["link_id"], "type": "COMMENTED_ON", "time": h["created_utc"]})
     for r in read_csv(PAIRS / "diff.csv"):
         kind = {"repost": "SAME_AS", "edit": "VARIANT_OF"}.get(r["kind"])

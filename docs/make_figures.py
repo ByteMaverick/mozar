@@ -141,62 +141,65 @@ def figure1():
     row(ax, x + 3, 51.2, w - 6, "not an edit", "46", "both answers say no", h=5.4)
     arrow(ax, (x + w / 2, 49.7), (x + w / 2, 46.5))
 
-    # the graph
+    # the graph: RIFT's schema on the left, one real pair on the right
     panel(ax, 3, 4.5, 138.6, 41.5)
     T(ax, 7.5, 42.3, "Build the graph", size=7.2, weight="bold")
-    T(ax, 31.5, 42.2, "accounts, posts and pictures, with each poster's earlier activity (180 days back)", size=5.2,
-      color=FINE)
-    ya, yp, yi = 32, 22.5, 7
-    acc = {"A": (20, "posted the original"), "B": (52, "posted the edit, twice"), "C": (82, "commented on A")}
-    posts = {"p1": (20, "matched"), "p2": (47, "manipulated"), "p3": (57, "manipulated"), "p4": (82, "fresh")}
-    for name, (cx, what) in acc.items():
+    T(ax, 31.5, 42.2, "the posts, users and subreddits of RIFT, with pictures and comments added", size=5.2, color=FINE)
+    dash = (0, (3, 2))
+    ax.add_patch(Circle((15, 28), 3, fc="#e6e6e6", ec="black", lw=0.8, zorder=4))
+    T(ax, 15, 28, "User", size=4.8, ha="center")
+    ax.add_patch(Rectangle((34.2, 25.2), 5.6, 5.6, fc="white", ec="black", lw=0.9, zorder=4))
+    T(ax, 37, 28, "Post", size=4.8, ha="center")
+    card(ax, 53.5, 25.5, 13, 5, ec="black", lw=0.8)
+    T(ax, 60, 28, "Subreddit", size=4.8, ha="center")
+    for x0 in (33.5, 53):
+        ax.add_patch(Rectangle((x0, 10.5), 7, 5, fc="#cfcfcf", ec="black", lw=0.6, ls=dash, zorder=4))
+        T(ax, x0 + 3.5, 13, "Image", size=4.8, ha="center")
+    arrow(ax, (34.2, 28), (18, 28))
+    mono(ax, 26.1, 29.6, "POSTED_BY", ha="center")
+    arrow(ax, (39.8, 28), (53.5, 28))
+    mono(ax, 46.6, 29.6, "BELONGS_TO", ha="center")
+    arrow(ax, (37, 25.2), (37, 15.5), ls=dash)
+    mono(ax, 38.2, 20.4, "HAS_IMAGE")
+    ax.plot([40.5, 53], [13, 13], color="black", lw=0.9, ls=dash, zorder=2)
+    mono(ax, 46.75, 14.6, "VARIANT_OF", ha="center")
+    mono(ax, 46.75, 11.4, "SAME_AS", ha="center")
+    arrow(ax, (16.5, 30.6), (35, 30.8), ls=dash, rad=-0.45)
+    mono(ax, 26.1, 36.2, "COMMENTED_ON", ha="center")
+    ax.plot([8, 13], [6.8, 6.8], color="black", lw=0.9)
+    T(ax, 14.2, 6.8, "as in RIFT (Joshi, 2025)", size=4.6, color=FINE)
+    ax.plot([38, 43], [6.8, 6.8], color="black", lw=0.9, ls=dash)
+    T(ax, 44.2, 6.8, "added here", size=4.6, color=FINE)
+    ax.plot([69.5, 69.5], [7, 39], color="#c4c4c4", lw=0.5)
+
+    ya, yp, yi = 33.5, 23.5, 7.5
+    for cx, kind, who, name in ((80, "matched", "A", "hat_a.jpg"), (110, "manipulated", "B", "hat_b.jpg")):
         ax.add_patch(Circle((cx, ya), 2.1, fc="#e6e6e6", ec="black", lw=0.7, zorder=4))
-        side = 1 if name == "C" else -1   # C's label goes on the right, clear of its dashed link
-        T(ax, cx + 3.2 * side, ya + 0.9, "account " + name, size=5.4, ha="left" if side > 0 else "right")
-        T(ax, cx + 3.2 * side, ya - 1.7, what, size=4.5, color=FINE, ha="left" if side > 0 else "right")
-    for (name, (cx, _)), n in zip(acc.items(), (1, 4, 2)):
-        for k in range(n):
-            px = cx - 2.3 * (n - 1) + 4.6 * k
-            ax.add_patch(Rectangle((px - 0.8, ya + 4.6), 1.6, 1.6, fc="white", ec=LINE, lw=0.5, zorder=4))
-            ax.plot([cx, px], [ya + 2.1, ya + 4.6], color=LINE, lw=0.4, zorder=2)
-    T(ax, 23.5, ya + 5.4, "earlier posts and comments", size=4.8, color=FINE, style="italic")
-    for cx, kind in posts.values():
         ax.add_patch(Rectangle((cx - 1.8, yp - 1.8), 3.6, 3.6, fc="white", ec=LABEL[kind], lw=1.3, zorder=4))
-    for a, ps in (("A", ["p1"]), ("B", ["p2", "p3"]), ("C", ["p4"])):
-        for p in ps:
-            arrow(ax, (acc[a][0], ya - 2.1), (posts[p][0], yp + 1.8), lw=0.7)
-    hi = picture(ax, "hat_a.jpg", 14.5, yi, 11)
-    picture(ax, "hat_b.jpg", 46.5, yi, 11)
-    card(ax, 77.5, yi + 0.8, 9, hi - 1.6, fc="#f4f4f4")
-    T(ax, 82, yi + hi / 2, "a new\npicture", size=4.8, color=FINE, ha="center", linespacing=1.2)
-    for a, b in (((20, yp - 1.8), (20, yi + hi)), ((47, yp - 1.8), (50, yi + hi)), ((57, yp - 1.8), (54, yi + hi)),
-                 ((82, yp - 1.8), (82, yi + hi - 0.8))):
-        arrow(ax, a, b, lw=0.7)
-    ax.plot([25.5, 46.5], [yi + hi / 2, yi + hi / 2], color="black", lw=1.5, zorder=2)
-    mono(ax, 36, yi + hi / 2 + 1.6, "VARIANT_OF", ha="center")
-    T(ax, 36, yi + hi / 2 - 1.8, "one is an edit of the other", size=4.5, color=FINE, ha="center")
-    arrow(ax, (acc["C"][0] - 2, ya - 0.8), (21.9, yp + 0.9), color=FINE, lw=0.6, ls=(0, (3, 2)), rad=-0.07)
-    mono(ax, 67, 24.6, "COMMENTED_ON", ha="center")
-    mono(ax, 21, 27.4, "POSTED")
-    mono(ax, 21, 18.4, "HAS_IMAGE")
-    T(ax, 13.6, yi + hi / 2, "original", size=5.4, ha="right")
-    T(ax, 58.4, yi + hi / 2, "edited", size=5.4)
-    card(ax, 100, 7, 38.6, 31)
-    ax.add_patch(Circle((103.4, 34.6), 1.2, fc="#e6e6e6", ec="black", lw=0.6, zorder=4))
-    T(ax, 105.6, 34.6, "account", size=5.2)
-    ax.add_patch(Rectangle((115, 33.5), 2.2, 2.2, fc="white", ec="black", lw=0.8, zorder=4))
-    T(ax, 118.4, 34.6, "post", size=5.2)
-    ax.add_patch(Rectangle((125.2, 33.6), 3, 2, fc="#cfcfcf", ec="black", lw=0.5, zorder=4))
-    T(ax, 129.4, 34.6, "picture", size=5.2)
-    for k, (kind, s) in enumerate((("manipulated", "manipulated · carries the edit"),
-                                   ("matched", "authentic, matched · the original"),
-                                   ("fresh", "authentic, fresh · no look-alike"))):
-        ax.add_patch(Rectangle((102.3, 28.4 - 3.7 * k), 2.2, 2.2, fc="white", ec=LABEL[kind], lw=1.2, zorder=4))
-        T(ax, 105.6, 29.5 - 3.7 * k, s, size=5.2)
-    T(ax, 102.3, 17.6, "Exact reposts are joined by SAME_AS links.", size=4.7, color=FINE)
-    T(ax, 102.3, 15, "A post's features use only links dated before it.", size=4.7, color=FINE)
-    T(ax, 102.3, 10.6, "Which side of a pair is the edit is the label.\nIt is never stored in the graph.", size=4.7,
-      color=FINE, style="italic", linespacing=1.3)
+        arrow(ax, (cx, yp + 1.8), (cx, ya - 2.1), lw=0.7)
+        hi = picture(ax, name, cx - 5.5, yi, 11, tag="original" if who == "A" else "edited")
+        arrow(ax, (cx, yp - 1.8), (cx, yi + hi), lw=0.7)
+    T(ax, 80, ya + 4.2, "account A: posted the original", size=4.6, ha="center")
+    T(ax, 113.1, ya + 0.9, "account B", size=4.8)
+    T(ax, 113.1, ya - 1.7, "posted the edit", size=4.5, color=FINE)
+    for k in range(3):
+        px = 105.4 + 4.6 * k
+        ax.add_patch(Rectangle((px - 0.8, ya + 4.6), 1.6, 1.6, fc="white", ec=LINE, lw=0.5, zorder=4))
+        ax.plot([110, px], [ya + 2.1, ya + 4.6], color=LINE, lw=0.4, zorder=2)
+    T(ax, 117.5, ya + 5.4, "earlier posts and comments", size=4.5, color=FINE, style="italic")
+    card(ax, 85.5, yp - 2.3, 19, 4.6, ec="black", lw=0.7)
+    T(ax, 95, yp, "r/shittymoviedetails", size=4.4, ha="center")
+    arrow(ax, (81.8, yp), (85.5, yp), lw=0.7)
+    arrow(ax, (108.2, yp), (104.5, yp), lw=0.7)
+    ax.plot([85.5, 104.5], [yi + hi / 2, yi + hi / 2], color="black", lw=1.5, zorder=2)
+    mono(ax, 95, yi + hi / 2 + 1.6, "VARIANT_OF", ha="center")
+    T(ax, 95, yi + hi / 2 - 1.8, "one is an edit of the other", size=4.5, color=FINE, ha="center")
+    for k, (kind, text) in enumerate((("manipulated", "manipulated"), ("matched", "authentic, matched"),
+                                      ("fresh", "authentic, fresh"))):
+        ax.add_patch(Rectangle((124, 25.4 - 3.6 * k), 2.2, 2.2, fc="white", ec=LABEL[kind], lw=1.2, zorder=4))
+        T(ax, 127.2, 26.5 - 3.6 * k, text, size=4.8)
+    T(ax, 124, 12.4, "Which side is the edit is the\nlabel. It is never stored\nin the graph.", size=4.4, color=FINE,
+      style="italic", linespacing=1.3)
     T(ax, 141.6, 2.2, "counts: one month of 15 communities, 8 Oct to 8 Nov 2026", size=5, color=FINE, ha="right",
       style="italic")
     finish(fig, ax, size, "fig1_dataset")

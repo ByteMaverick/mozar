@@ -115,9 +115,9 @@ A person then checks the pairs in `data/pairs/review.html` and writes verdicts i
 `graph.py histories` fetches what each poster in the dataset did in the 180 days before their post.
 `graph.py graph` writes two plain tables, `nodes.csv` and `links.csv`, which also load into Neo4j as they are.
 
-Panel 5 of the figure at the top shows the result: accounts, posts and pictures, joined by `POSTED`,
-`HAS_IMAGE`, `COMMENTED_ON`, `CROSSPOSTED`, `SAME_AS` (exact repost) and `VARIANT_OF` (one is an edit of the
-other) links.
+The graph follows RIFT (Joshi, 2025): Post, User and Subreddit nodes joined by `POSTED_BY` and
+`BELONGS_TO`. We add an Image node and the links `HAS_IMAGE`, `COMMENTED_ON`, `CROSSPOSTED`, `SAME_AS` (exact
+repost) and `VARIANT_OF` (one is an edit of the other). The bottom panel of the figure at the top shows both.
 
 The `VARIANT_OF` link has no direction. Which side is the edit is the label, and the label is never stored in
 the graph.
