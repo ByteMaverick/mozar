@@ -14,4 +14,6 @@ if [ -n "$WAIT_FOR" ]; then
   until grep -q "review page" "$WAIT_FOR"; do sleep 60; done
 fi
 nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv
-.venv/bin/python -u collect.py judge index review
+# Stop labeling before the 6-hour limit so the decisions below are always written; the next job continues.
+timeout 340m .venv/bin/python -u collect.py judge
+.venv/bin/python -u collect.py decide index review
