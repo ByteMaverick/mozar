@@ -15,6 +15,10 @@ SUBREDDITS = [
     "shittymoviedetails", "marvelstudios",                                  # movies
     "aww", "food",                                                          # calm controls
 ]
+# Added for July 2025 onward: photo-heavy communities, and ones where people ask whether an image is real.
+MORE_SUBREDDITS = ["mildlyinteresting", "HistoryPorn", "isthisAI", "RealOrAI"]
+if os.environ.get("MOZAR_SUBREDDITS"):  # comma-separated list for one run, for example "isthisAI,RealOrAI"
+    SUBREDDITS = os.environ["MOZAR_SUBREDDITS"].split(",")
 AFTER = os.environ.get("MOZAR_AFTER", "2026-10-08")    # inclusive, UTC
 BEFORE = os.environ.get("MOZAR_BEFORE", "2026-11-08")  # exclusive, UTC
 

@@ -68,6 +68,7 @@ The tables load into Neo4j as they are, for looking at the graph; nothing in the
 | Celebrity | Fauxmoi, popculturechat | celebrity photos are common edit targets |
 | Film | shittymoviedetails, marvelstudios | posters and stills are edited and reposted constantly |
 | Controls | aww, food | manipulation unlikely; a baseline |
+| Added from July 2025 | mildlyinteresting, HistoryPorn, isthisAI, RealOrAI | real photos (the first two), and communities where people ask whether an image is real; chosen because the first 15 gave mostly meme edits |
 
 The list was chosen by hand for the class run. The proposal plans 100 to 200 communities chosen by a written
 rule for the paper.
